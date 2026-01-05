@@ -1,13 +1,20 @@
 import { useReducer } from 'react';
 import { Message, Role } from '@/types/message';
 
+export const ChatActionType = {
+  AddMessage: 'ADD_MESSAGE',
+  ClearChat: 'CLEAR_CHAT',
+} as const;
+
+export type ChatActionType = typeof ChatActionType[keyof typeof ChatActionType];
+
 type ChatState = {
   chathistory: Message[];
 };
 
 type ChatAction =
-  | { type: 'ADD_MESSAGE'; payload: Message }
-  | { type: 'CLEAR_CHAT' };
+  | { type: typeof ChatActionType.AddMessage; payload: Message }
+  | { type: typeof ChatActionType.ClearChat };
 
 const initialState: ChatState = {
   chathistory: [],
@@ -15,12 +22,12 @@ const initialState: ChatState = {
 
 function chatReducer(state: ChatState, action: ChatAction): ChatState {
   switch (action.type) {
-    case 'ADD_MESSAGE':
+    case ChatActionType.AddMessage:
       return {
         ...state,
         chathistory: [...state.chathistory, action.payload],
       };
-    case 'CLEAR_CHAT':
+    case ChatActionType.ClearChat:
       return {
         ...state,
         chathistory: [],
@@ -39,11 +46,11 @@ export function chatPageHook() {
       role: Role.User,
       timestamp: new Date(),
     };
-    dispatch({ type: 'ADD_MESSAGE', payload: newMessage });
+    dispatch({ type: ChatActionType.AddMessage, payload: newMessage });
   };
 
   const handleClearChat = () => {
-    dispatch({ type: 'CLEAR_CHAT' });
+    dispatch({ type: ChatActionType.ClearChat });
   };
 
   return {
