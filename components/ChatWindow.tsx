@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Message } from '@/types/message';
+import { ResponseMessage } from 'letschat';
 import MessageComponent from './Message';
 
 interface ChatWindowProps {
-  messages: Message[];
+  messages: ResponseMessage[];
 }
 
 export default function ChatWindow({ messages }: ChatWindowProps) {

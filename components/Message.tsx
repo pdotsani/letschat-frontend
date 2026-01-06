@@ -1,13 +1,13 @@
 'use client';
 
-import { Message as MessageType, Role } from '@/types/message';
+import { ResponseMessage, Role } from 'letschat';
 
 interface MessageProps {
-  message: MessageType;
+  message: ResponseMessage;
 }
 
 export default function Message({ message }: MessageProps) {
-  const isUser = message.role === Role.User;
+  const isUser = message.messageRole === Role.User;
 
   return (
     <div
@@ -21,7 +21,7 @@ export default function Message({ message }: MessageProps) {
         }`}
       >
         <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-          {message.message}
+          {message.content}
         </p>
         <span
           className={`mt-1 block text-xs ${

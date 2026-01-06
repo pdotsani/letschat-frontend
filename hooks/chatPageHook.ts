@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { Message, Role } from '@/types/message';
+import { ResponseMessage, Role } from 'letschat';
 
 export const ChatActionType = {
   AddMessage: 'ADD_MESSAGE',
@@ -9,11 +9,11 @@ export const ChatActionType = {
 export type ChatActionType = typeof ChatActionType[keyof typeof ChatActionType];
 
 type ChatState = {
-  chathistory: Message[];
+  chathistory: ResponseMessage[];
 };
 
 type ChatAction =
-  | { type: typeof ChatActionType.AddMessage; payload: Message }
+  | { type: typeof ChatActionType.AddMessage; payload: ResponseMessage }
   | { type: typeof ChatActionType.ClearChat };
 
 const initialState: ChatState = {
@@ -41,9 +41,9 @@ export function chatPageHook() {
   const [state, dispatch] = useReducer(chatReducer, initialState);
 
   const handleSendMessage = (message: string) => {
-    const newMessage: Message = {
-      message,
-      role: Role.User,
+    const newMessage: ResponseMessage = {
+      content: message,
+      messageRole: Role.User,
       timestamp: new Date(),
     };
     dispatch({ type: ChatActionType.AddMessage, payload: newMessage });
