@@ -15,10 +15,10 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/letschat": "git+ssh://git@github.com:pdotsani/letschat-types.git#main",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/letschat": "git+ssh://git@github.com:pdotsani/letschat-types.git#main",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "tailwindcss": "^4",

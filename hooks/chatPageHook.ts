@@ -1,5 +1,7 @@
 import { useReducer } from 'react';
-import { ResponseMessage, Role } from 'letschat';
+import { ResponseMessage, RoleTypes } from '@Types/letschat';
+
+const SYSTEM_URL = process.env.NEXT_PUBLIC_SERVER;
 
 export const ChatActionType = {
   AddMessage: 'ADD_MESSAGE',
@@ -40,10 +42,46 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
 export function chatPageHook() {
   const [state, dispatch] = useReducer(chatReducer, initialState);
 
-  const handleSendMessage = (message: string) => {
+  const sendMessage = async (content: string, model: string) => {
+    const response = await fetch(`${SYSTEM_URL}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content,
+        history: state.chathistory,
+        model,
+      }),
+    });
+
+    return response.json();
+  }
+
+  const handleSendMessage = async (content: string, model: string) => {
+    const newMessage: ResponseMessage = {
+      content,
+      messageRole: RoleTypes.User,
+      timestamp: new Date(),
+    };
+    
+    dispatch({ type: ChatActionType.AddMessage, payload: newMessage });
+
+    const systemResponse = await sendMessage(content, model);
+
+    const assistantMessage: ResponseMessage = {
+      content: systemResponse.content,
+      messageRole: RoleTypes.Assistant,
+      timestamp: new Date(systemResponse.timestamp),
+    };
+
+    dispatch({ type: ChatActionType.AddMessage, payload: assistantMessage });
+  };
+
+  const handleAddSystemMessage = (message: string) => {
     const newMessage: ResponseMessage = {
       content: message,
-      messageRole: Role.User,
+      messageRole: RoleTypes.System,
       timestamp: new Date(),
     };
     dispatch({ type: ChatActionType.AddMessage, payload: newMessage });
@@ -56,6 +94,7 @@ export function chatPageHook() {
   return {
     chathistory: state.chathistory,
     handleSendMessage,
+    handleAddSystemMessage,
     handleClearChat,
   };
 }

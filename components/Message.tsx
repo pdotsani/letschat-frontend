@@ -1,13 +1,13 @@
 'use client';
 
-import { ResponseMessage, Role } from 'letschat';
+import { ResponseMessage, RoleTypes } from '@Types/letschat';
 
 interface MessageProps {
   message: ResponseMessage;
 }
 
 export default function Message({ message }: MessageProps) {
-  const isUser = message.messageRole === Role.User;
+  const isUser = message.messageRole === RoleTypes.User;
 
   return (
     <div

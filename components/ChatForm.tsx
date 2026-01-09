@@ -3,7 +3,7 @@
 import { useState, FormEvent } from 'react';
 
 interface ChatFormProps {
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string, model: string) => void;
 }
 
 export default function ChatForm({ onSendMessage }: ChatFormProps) {
@@ -12,7 +12,7 @@ export default function ChatForm({ onSendMessage }: ChatFormProps) {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (message.trim()) {
-      onSendMessage(message.trim());
+      onSendMessage(message.trim(), 'gemma3');
       setMessage('');
     }
   };
