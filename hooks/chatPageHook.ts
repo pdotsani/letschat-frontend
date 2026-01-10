@@ -6,6 +6,7 @@ const SYSTEM_URL = process.env.NEXT_PUBLIC_SERVER;
 export const ChatActionType = {
   AddMessage: 'ADD_MESSAGE',
   ClearChat: 'CLEAR_CHAT',
+  RemoveLastMessage: 'REMOVE_LAST_MESSAGE',
 } as const;
 
 export type ChatActionType = typeof ChatActionType[keyof typeof ChatActionType];
@@ -16,7 +17,8 @@ type ChatState = {
 
 type ChatAction =
   | { type: typeof ChatActionType.AddMessage; payload: ResponseMessage }
-  | { type: typeof ChatActionType.ClearChat };
+  | { type: typeof ChatActionType.ClearChat }
+  | { type: typeof ChatActionType.RemoveLastMessage };
 
 const initialState: ChatState = {
   chathistory: [],
@@ -33,6 +35,11 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return {
         ...state,
         chathistory: [],
+      };
+    case ChatActionType.RemoveLastMessage:
+      return {
+        ...state,
+        chathistory: state.chathistory.slice(0, -1),
       };
     default:
       return state;
@@ -64,8 +71,16 @@ export function chatPageHook() {
       messageRole: RoleTypes.User,
       timestamp: new Date(),
     };
+
+    const thinkingMessage: ResponseMessage = {
+      content: 'thinking...',
+      messageRole: RoleTypes.Assistant,
+      timestamp: new Date(),
+    }
     
     dispatch({ type: ChatActionType.AddMessage, payload: newMessage });
+
+    dispatch({ type: ChatActionType.AddMessage, payload: thinkingMessage })
 
     const systemResponse = await sendMessage(content, model);
 
@@ -74,6 +89,8 @@ export function chatPageHook() {
       messageRole: RoleTypes.Assistant,
       timestamp: new Date(systemResponse.timestamp),
     };
+
+    dispatch({ type: ChatActionType.RemoveLastMessage });
 
     dispatch({ type: ChatActionType.AddMessage, payload: assistantMessage });
   };
@@ -89,6 +106,10 @@ export function chatPageHook() {
 
   const handleClearChat = () => {
     dispatch({ type: ChatActionType.ClearChat });
+  };
+
+  const removeLastMessage = () => {
+    dispatch({ type: ChatActionType.RemoveLastMessage });
   };
 
   return {
