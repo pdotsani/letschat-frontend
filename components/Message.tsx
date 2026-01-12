@@ -1,6 +1,7 @@
 'use client';
 
 import { ResponseMessage, RoleTypes } from '@Types/letschat';
+import Markdown from 'react-markdown';
 
 interface MessageProps {
   message: ResponseMessage;
@@ -20,9 +21,15 @@ export default function Message({ message }: MessageProps) {
             : 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
         }`}
       >
-        <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-          {message.content}
-        </p>
+        <>
+          {
+          !isUser ?  
+            (<Markdown>{message.content}</Markdown>): 
+            (<p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
+              {message.content}
+            </p>)
+          }
+        </>
         <span
           className={`mt-1 block text-xs ${
             isUser
