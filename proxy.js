@@ -1,8 +1,10 @@
 // middleware.js (in root directory)
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/server'
 
-export async function middleware(req) {
+
+export async function proxy(req) {
+  const supabase = await createClient();
   const res = NextResponse.next();
   
   const { data: { session } } = await supabase.auth.getSession();
