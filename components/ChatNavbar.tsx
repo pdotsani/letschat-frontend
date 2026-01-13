@@ -2,12 +2,26 @@
 
 import { supabase } from '@/lib/supabase/client';
 import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface ChatNavbarProps {
   onClearChat: () => void;
 }
 
 export default function ChatNavbar({ onClearChat }: ChatNavbarProps) {
+  const [avatar, setAvatar] = useState<string | null>(null);
+
+  const getAvatarUrl = async () => {
+    const { data: { session: { user } } } = await supabase.auth.getSession();
+    return user?.user_metadata?.avatar_url;
+  };
+
+  useEffect(() => {
+    getAvatarUrl().then((avatarUrl) => {
+      setAvatar(avatarUrl);
+    });
+  }, []);
+
   const handleLogout = async() => {
     const { error } = await supabase.auth.signOut();
     
@@ -60,6 +74,9 @@ export default function ChatNavbar({ onClearChat }: ChatNavbarProps) {
           />
         </svg>
       </button>
+      {avatar && <div className="flex items-center justify-center">
+        <img src={avatar} alt="avatar" className="rounded-full w-6 h-6" />
+      </div>}
     </nav>
   );
 }
