@@ -15,7 +15,7 @@ export async function GET(request: Request) {
 
     if (!error) {
       const forwardedHost = request.headers.get('x-forwarded-host')
-      const forwardedProto = request.headers.get('x-forwarded-proto') // Add this
+      const forwardedProto = request.headers.get('x-forwarded-proto')
       const isLocalEnv = process.env.NODE_ENV === 'development'
       
       if (isLocalEnv) {
