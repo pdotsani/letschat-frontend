@@ -2,6 +2,9 @@
 
 import { ResponseMessage, RoleTypes } from '@Types/letschat';
 import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+
+import './message.css';
 
 interface MessageProps {
   message: ResponseMessage;
@@ -24,7 +27,9 @@ export default function Message({ message }: MessageProps) {
         <>
           {
           !isUser ?  
-            (<Markdown>{message.content}</Markdown>): 
+            (<div className='markdown-content'>
+              <Markdown remarkPlugins={[remarkGfm]}>{message.content}</Markdown>
+            </div>): 
             (<p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
               {message.content}
             </p>)

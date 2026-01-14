@@ -1,0 +1,29 @@
+/* Add spacing to headings and paragraphs */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-content p {
+  margin-bottom: 1rem;
+}
+
+.markdown-content table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin-bottom: 1rem;
+}
+
+.markdown-content td,
+.markdown-content th {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+}

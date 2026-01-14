@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { ResponseMessage } from '@Types/letschat';
-import MessageComponent from './Message';
+import MessageComponent from './Message/Message';
 
 interface ChatWindowProps {
   messages: ResponseMessage[];
