@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { ResponseMessage, RoleTypes } from '@Types/letschat';
+import { ResponseMessage, RoleTypes } from 'letschat-types';
 
 const SYSTEM_URL = process.env.NEXT_PUBLIC_SERVER;
 

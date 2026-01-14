@@ -12,7 +12,7 @@ export default function ChatNavbar({ onClearChat }: ChatNavbarProps) {
   const [avatar, setAvatar] = useState<string | null>(null);
 
   const getAvatarUrl = async () => {
-    const { data: { session: { user } } } = await supabase.auth.getSession();
+    const { data: { user } } = await supabase.auth.getUser();
     return user?.user_metadata?.avatar_url;
   };
 

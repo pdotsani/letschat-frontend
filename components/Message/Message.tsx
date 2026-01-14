@@ -1,6 +1,6 @@
 'use client';
 
-import { ResponseMessage, RoleTypes } from '@Types/letschat';
+import { ResponseMessage, RoleTypes } from 'letschat-types';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
