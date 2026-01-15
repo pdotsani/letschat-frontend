@@ -20,17 +20,47 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## Setup
 
-To learn more about Next.js, take a look at the following resources:
+Get access to the common library `letschat-types`, and add your ssh key to the ssh-agent:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+  # Start SSH agent if needed
+  eval "$(ssh-agent -s)"
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+  # Add your GitHub SSH key
+  ssh-add ~/.ssh/id_rsa  # or whatever key you use for GitHub
+```
 
-## Deploy on Vercel
+Create a supabase project at [supabase.com](https://supabase.com).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Create a `.env` file in the root directory with the following environment variables:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Node environment
+NODE_ENV=development
+
+# Site URL
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Backend server URL
+NEXT_PUBLIC_SERVER=http://localhost:5050
+
+# Supabase configuration
+NEXT_PUBLIC_SUPABASE_URL=your-project-url
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+```
+
+## Deploy with Docker
+
+Build and run the Docker container:
+
+```bash
+# Build the image (with SSH key for private dependencies)
+docker build --ssh default=$SSH_AUTH_SOCK --secret id=dotenv,src=.env -t letschat-frontend .
+
+# Run the container
+docker run -p 3000:3000 letschat-frontend
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).

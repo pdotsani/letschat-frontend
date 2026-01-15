@@ -14,6 +14,7 @@ RUN --mount=type=ssh \
     ssh-keyscan github.com >> ~/.ssh/known_hosts && \
     npm ci
 
+# Mount the .env file
 RUN --mount=type=secret,id=dotenv,dst=/tmp/.env \
     export $(cat /tmp/.env | xargs)
 
