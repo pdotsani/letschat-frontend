@@ -1,5 +1,6 @@
 import { useReducer } from 'react';
 import { ResponseMessage, RoleTypes } from 'letschat-types';
+import { supabase } from '@/lib/supabase/client';
 
 const SYSTEM_URL = process.env.NEXT_PUBLIC_SERVER;
 
@@ -50,19 +51,30 @@ export function chatPageHook() {
   const [state, dispatch] = useReducer(chatReducer, initialState);
 
   const sendMessage = async (content: string, model: string) => {
-    const response = await fetch(`${SYSTEM_URL}/api/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        content,
-        history: state.chathistory,
-        model,
-      }),
-    });
+    try {
+      // Get the auth token from the session to access the server
+      const { data: { session } } = await supabase.auth.getSession();
+      const authToken = session?.access_token;
+  
+      const response = await fetch(`${SYSTEM_URL}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          content,
+          history: state.chathistory,
+          model,
+        }),
+      })
+  
+      return response.json();
 
-    return response.json();
+    } catch (error) {
+      console.error('Error sending message:', error);
+      return { error: 'Error sending message' };
+    }
   }
 
   const handleSendMessage = async (content: string, model: string) => {
@@ -85,9 +97,13 @@ export function chatPageHook() {
     const systemResponse = await sendMessage(content, model);
 
     const assistantMessage: ResponseMessage = {
-      content: systemResponse.content,
+      content: systemResponse.content ? 
+        systemResponse.content : 
+        'Error sending message or no content available',
       messageRole: RoleTypes.Assistant,
-      timestamp: new Date(systemResponse.timestamp),
+      timestamp: systemResponse.timestamp
+        ? new Date(systemResponse.timestamp)
+        : new Date(),
     };
 
     dispatch({ type: ChatActionType.RemoveLastMessage });
