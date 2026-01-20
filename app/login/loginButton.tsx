@@ -13,6 +13,6 @@ export default function LoginButton() {
   }
 
   return (
-    <button onClick={handleSignInWithGoogle}>Sign in with Google</button>
+    <button className="cursor-pointer" onClick={handleSignInWithGoogle}>Sign in with Google</button>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from "next/image";
 import { supabase } from '@/lib/supabase/client';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -36,27 +37,14 @@ export default function ChatNavbar({ onClearChat }: ChatNavbarProps) {
     <nav className="fixed top-0 left-0 right-0 z-50 flex justify-end h-16 items-center border-b border-zinc-200 bg-white px-4 dark:border-zinc-800 dark:bg-black">
       <button
         onClick={onClearChat}
-        className="flex items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
+        className="flex items-center justify-center rounded-lg p-2 cursor-pointer text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
         aria-label="Clear chat"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-          className="h-5 w-5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 8.25v6.75m0 0l-3-3m3 3l3-3M3.375 21V4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v16.125c0 .621-.504 1.125-1.125 1.125h-4.5c-.621 0-1.125-.504-1.125-1.125z"
-          />
-        </svg>
+        <Image src="/file.svg" alt="New chat" width={24} height={24} />
       </button>
       <button
         onClick={handleLogout}
-        className="flex items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
+        className="flex items-center justify-center rounded-lg p-2 cursor-pointer text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
         aria-label="Logout"
       >
         <svg
@@ -65,7 +53,7 @@ export default function ChatNavbar({ onClearChat }: ChatNavbarProps) {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="h-5 w-5"
+          className="h-8 w-8"
         >
           <path
             strokeLinecap="round"
@@ -74,7 +62,7 @@ export default function ChatNavbar({ onClearChat }: ChatNavbarProps) {
           />
         </svg>
       </button>
-      {avatar && <div className="flex items-center justify-center">
+      {avatar && <div className="flex items-center justify-center pl-2">
         <img src={avatar} alt="avatar" className="rounded-full w-6 h-6" />
       </div>}
     </nav>
