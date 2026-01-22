@@ -1,7 +1,15 @@
 import { NextResponse } from 'next/server'
-// The client you created from the Server-Side Auth instructions
 import { createClient } from '@/lib/supabase/server'
 
+/**
+ * GET
+ * 
+ * This function handles the authentication process. It receives the code from the server and exchanges it for a session.
+ * The code is then used to authenticate the user and redirect them to the chat page.
+ * 
+ * @param request - The request object
+ * @returns The response object
+ */
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')

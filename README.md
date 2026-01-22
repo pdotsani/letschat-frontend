@@ -1,3 +1,7 @@
+# letschat-frontend
+
+This is a Next js application that can connect to an llm server. Authentication is handled by supabase.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -50,6 +54,8 @@ NEXT_PUBLIC_SERVER=http://localhost:5050
 NEXT_PUBLIC_SUPABASE_URL=your-project-url
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 ```
+
+You will also need to setup the server of this project which can be found [here](https://github.com/pdotsani/letschat-server).
 
 ## Deploy with Docker
 

@@ -47,6 +47,13 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
   }
 }
 
+/**
+ * chaPageHook
+ * 
+ * This hook manages chat data and functionality. A reducer is used to manage the state of the chat.
+ * 
+ * @returns chathistory, handleSendMessage, handleAddSystemMessage, handleClearChat
+ */
 export function chatPageHook() {
   const [state, dispatch] = useReducer(chatReducer, initialState);
 
