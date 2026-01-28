@@ -8,21 +8,37 @@ export const ChatActionType = {
   AddMessage: 'ADD_MESSAGE',
   ClearChat: 'CLEAR_CHAT',
   RemoveLastMessage: 'REMOVE_LAST_MESSAGE',
+  UpdateChats: 'UPDATE_CHATS',
+  ClearChats: 'CLEAR_CHATS',
+  UpdateChatId: 'UPDATE_CHAT_ID',
 } as const;
 
 export type ChatActionType = typeof ChatActionType[keyof typeof ChatActionType];
 
+export interface Chat {
+  id: string;
+  name: string;
+  updatedAt: Date;
+}
+
 type ChatState = {
   chathistory: ResponseMessage[];
+  chats: Chat[];
+  chatId: string | null;
 };
 
 type ChatAction =
   | { type: typeof ChatActionType.AddMessage; payload: ResponseMessage }
   | { type: typeof ChatActionType.ClearChat }
-  | { type: typeof ChatActionType.RemoveLastMessage };
+  | { type: typeof ChatActionType.RemoveLastMessage }
+  | { type: typeof ChatActionType.UpdateChats; payload: Chat[] }
+  | { type: typeof ChatActionType.ClearChats; }
+  | { type: typeof ChatActionType.UpdateChatId; payload: string };
 
 const initialState: ChatState = {
   chathistory: [],
+  chats: [],
+  chatId: null,
 };
 
 function chatReducer(state: ChatState, action: ChatAction): ChatState {
@@ -41,6 +57,16 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return {
         ...state,
         chathistory: state.chathistory.slice(0, -1),
+      };
+    case ChatActionType.UpdateChats:
+      return {
+        ...state,
+        chats: action.payload,
+      };
+    case ChatActionType.ClearChats:
+      return {
+        ...state,
+        chats: [],
       };
     default:
       return state;
@@ -73,6 +99,7 @@ export function chatPageHook() {
           content,
           history: state.chathistory,
           model,
+          chatId: state.chatId,
         }),
       })
   
@@ -116,6 +143,10 @@ export function chatPageHook() {
     dispatch({ type: ChatActionType.RemoveLastMessage });
 
     dispatch({ type: ChatActionType.AddMessage, payload: assistantMessage });
+
+    if (state.chatId == null) {
+      dispatch({ type: ChatActionType.UpdateChatId, payload: systemResponse.chatId });
+    }
   };
 
   const handleAddSystemMessage = (message: string) => {
@@ -131,15 +162,35 @@ export function chatPageHook() {
     dispatch({ type: ChatActionType.ClearChat });
   };
 
-  const removeLastMessage = () => {
-    dispatch({ type: ChatActionType.RemoveLastMessage });
+  const getChats = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const authToken = session?.access_token;
+
+    const response = await fetch(`${SYSTEM_URL}/api/chats`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
+      },
+    })
+
+    const chats: Chat[] = await response.json();
+
+    dispatch({ type: ChatActionType.UpdateChats, payload: chats });
+  };
+
+  const clearChats = () => {
+    dispatch({ type: ChatActionType.ClearChats });
   };
 
   return {
     chathistory: state.chathistory,
+    chats: state.chats,
     handleSendMessage,
     handleAddSystemMessage,
     handleClearChat,
+    getChats,
+    clearChats
   };
 }
 
