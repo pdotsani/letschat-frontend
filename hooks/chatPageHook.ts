@@ -1,11 +1,13 @@
 import { useReducer } from 'react';
 import { ResponseMessage, RoleTypes } from 'letschat-types';
 import { supabase } from '@/lib/supabase/client';
+import { time } from 'console';
 
 const SYSTEM_URL = process.env.NEXT_PUBLIC_SERVER;
 
 export const ChatActionType = {
   AddMessage: 'ADD_MESSAGE',
+  UploadChat: 'UPLOAD_CHAT',
   ClearChat: 'CLEAR_CHAT',
   RemoveLastMessage: 'REMOVE_LAST_MESSAGE',
   UpdateChats: 'UPDATE_CHATS',
@@ -28,6 +30,7 @@ type ChatState = {
 };
 
 type ChatAction =
+  | { type: typeof ChatActionType.UploadChat; payload: ResponseMessage[] }
   | { type: typeof ChatActionType.AddMessage; payload: ResponseMessage }
   | { type: typeof ChatActionType.ClearChat }
   | { type: typeof ChatActionType.RemoveLastMessage }
@@ -43,6 +46,16 @@ const initialState: ChatState = {
 
 function chatReducer(state: ChatState, action: ChatAction): ChatState {
   switch (action.type) {
+    case ChatActionType.UpdateChatId:
+      return {
+        ...state,
+        chatId: action.payload,
+      };
+    case ChatActionType.UploadChat:
+      return {
+        ...state,
+        chathistory: [...action.payload],
+      };
     case ChatActionType.AddMessage:
       return {
         ...state,
@@ -183,6 +196,50 @@ export function chatPageHook() {
     dispatch({ type: ChatActionType.ClearChats });
   };
 
+  const uploadChat = async (chatId: string)  => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const authToken = session?.access_token;
+
+    const response = await fetch(`${SYSTEM_URL}/api/chat/${chatId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
+      },
+    })
+
+    const data = await response.json();
+
+    const chathistory: ResponseMessage[] = data.messages.map((message: any) => {
+      return {
+        content: message.content,
+        messageRole: message.messageRole,
+        timestamp: new Date(message.timestamp),
+      };
+    });
+
+    dispatch({ type: ChatActionType.UpdateChatId, payload: data.chatId });
+    dispatch({ type: ChatActionType.UploadChat, payload: chathistory });
+  };
+
+  const deleteChat = async (chatId: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const authToken = session?.access_token;
+    
+    const response = await fetch(`${SYSTEM_URL}/api/chat/${chatId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
+      },
+    })
+
+    getChats();
+    
+    return response.json();
+  }
+
+
   return {
     chathistory: state.chathistory,
     chats: state.chats,
@@ -190,7 +247,9 @@ export function chatPageHook() {
     handleAddSystemMessage,
     handleClearChat,
     getChats,
-    clearChats
+    clearChats,
+    uploadChat,
+    deleteChat
   };
 }
 
