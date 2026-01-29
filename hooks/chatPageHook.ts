@@ -13,6 +13,7 @@ export const ChatActionType = {
   UpdateChats: 'UPDATE_CHATS',
   ClearChats: 'CLEAR_CHATS',
   UpdateChatId: 'UPDATE_CHAT_ID',
+  UpdateChatName: 'UPDATE_CHAT_NAME',
 } as const;
 
 export type ChatActionType = typeof ChatActionType[keyof typeof ChatActionType];
@@ -27,6 +28,7 @@ type ChatState = {
   chathistory: ResponseMessage[];
   chats: Chat[];
   chatId: string | null;
+  chatName: string | null;
 };
 
 type ChatAction =
@@ -36,16 +38,23 @@ type ChatAction =
   | { type: typeof ChatActionType.RemoveLastMessage }
   | { type: typeof ChatActionType.UpdateChats; payload: Chat[] }
   | { type: typeof ChatActionType.ClearChats; }
-  | { type: typeof ChatActionType.UpdateChatId; payload: string };
+  | { type: typeof ChatActionType.UpdateChatId; payload: string }
+  | { type: typeof ChatActionType.UpdateChatName; payload: string };
 
 const initialState: ChatState = {
   chathistory: [],
   chats: [],
   chatId: null,
+  chatName: null,
 };
 
 function chatReducer(state: ChatState, action: ChatAction): ChatState {
   switch (action.type) {
+    case ChatActionType.UpdateChatName:
+      return {
+        ...state,
+        chatName: action.payload,
+      };
     case ChatActionType.UpdateChatId:
       return {
         ...state,
@@ -173,6 +182,7 @@ export function chatPageHook() {
 
   const handleClearChat = () => {
     dispatch({ type: ChatActionType.ClearChat });
+    dispatch({ type: ChatActionType.UpdateChatName, payload: '' });
   };
 
   const getChats = async () => {
@@ -190,10 +200,6 @@ export function chatPageHook() {
     const chats: Chat[] = await response.json();
 
     dispatch({ type: ChatActionType.UpdateChats, payload: chats });
-  };
-
-  const clearChats = () => {
-    dispatch({ type: ChatActionType.ClearChats });
   };
 
   const uploadChat = async (chatId: string)  => {
@@ -239,17 +245,21 @@ export function chatPageHook() {
     return response.json();
   }
 
+  const updateChatName = async (name: string) => {
+    dispatch({ type: ChatActionType.UpdateChatName, payload: name });
+  }
 
   return {
     chathistory: state.chathistory,
     chats: state.chats,
+    chatName: state.chatName,
     handleSendMessage,
     handleAddSystemMessage,
     handleClearChat,
     getChats,
-    clearChats,
     uploadChat,
-    deleteChat
+    deleteChat,
+    updateChatName
   };
 }
 

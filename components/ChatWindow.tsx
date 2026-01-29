@@ -13,10 +13,20 @@ interface ChatWindowProps {
   getChats: () => Promise<void>;
   uploadChat: (chatId: string) => Promise<void>;
   deleteChat: (chatId: string) => Promise<void>;
+  updateChatName: (name: string) => void;
   chats: Chat[];
 }
 
-export default function ChatWindow({ messages, isSidebarOpen, onCloseSidebar, getChats, uploadChat, deleteChat, chats }: ChatWindowProps) {
+export default function ChatWindow({ 
+  messages, 
+  isSidebarOpen, 
+  onCloseSidebar,
+  getChats, 
+  uploadChat, 
+  deleteChat,
+  updateChatName,
+  chats 
+}: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -31,6 +41,7 @@ export default function ChatWindow({ messages, isSidebarOpen, onCloseSidebar, ge
           getChats={getChats}
           uploadChat={uploadChat}
           deleteChat={deleteChat}
+          updateChatName={updateChatName}
           chats={chats}
         />
       )}

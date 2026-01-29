@@ -7,14 +7,16 @@ import ChatForm from '@/components/ChatForm';
 import { chatPageHook } from '@/hooks/chatPageHook';
 
 export default function ChatPage() {
-  const { 
-    chathistory, 
-    handleSendMessage, 
-    handleClearChat, 
-    getChats, 
+  const {
+    chathistory,
+    handleSendMessage,
+    handleClearChat,
+    getChats,
     uploadChat,
-    deleteChat, 
-    chats 
+    deleteChat,
+    updateChatName,
+    chatName,
+    chats
   } = chatPageHook();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -28,7 +30,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex h-screen flex-col bg-white dark:bg-black">
-      <ChatNavbar onClearChat={handleClearChat} onToggleSidebar={toggleSidebar} />
+      <ChatNavbar onClearChat={handleClearChat} onToggleSidebar={toggleSidebar} chatName={chatName} />
       <ChatWindow
         messages={chathistory}
         isSidebarOpen={isSidebarOpen}
@@ -36,6 +38,7 @@ export default function ChatPage() {
         getChats={getChats}
         uploadChat={uploadChat}
         deleteChat={deleteChat}
+        updateChatName={updateChatName}
         chats={chats}
       />
       <ChatForm onSendMessage={handleSendMessage} />

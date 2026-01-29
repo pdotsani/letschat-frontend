@@ -7,9 +7,10 @@ import { useEffect, useState } from 'react';
 interface ChatNavbarProps {
   onClearChat: () => void;
   onToggleSidebar: () => void;
+  chatName: string | null;
 }
 
-export default function ChatNavbar({ onClearChat, onToggleSidebar }: ChatNavbarProps) {
+export default function ChatNavbar({ onClearChat, onToggleSidebar, chatName }: ChatNavbarProps) {
   const [avatar, setAvatar] = useState<string | null>(null);
 
   const getAvatarUrl = async () => {
@@ -34,7 +35,14 @@ export default function ChatNavbar({ onClearChat, onToggleSidebar }: ChatNavbarP
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex justify-end h-16 items-center border-b border-zinc-200 bg-white px-4 dark:border-zinc-800 dark:bg-black">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center border-b border-zinc-200 bg-white px-4 dark:border-zinc-800 dark:bg-black">
+      <div className="flex-1" />
+      {chatName && (
+        <span className="absolute left-1/2 -translate-x-1/2 text-sm font-medium text-zinc-700 dark:text-zinc-300 truncate max-w-[50%]">
+          {chatName}
+        </span>
+      )}
+      <div className="flex items-center">
       <button
         onClick={onClearChat}
         className="flex items-center justify-center rounded-lg p-2 cursor-pointer text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
@@ -98,6 +106,7 @@ export default function ChatNavbar({ onClearChat, onToggleSidebar }: ChatNavbarP
       {avatar && <div className="flex items-center justify-center pl-2">
         <img src={avatar} alt="avatar" className="rounded-full w-6 h-6" />
       </div>}
+      </div>
     </nav>
   );
 }

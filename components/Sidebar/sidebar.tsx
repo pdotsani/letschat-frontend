@@ -8,14 +8,27 @@ interface SidebarProps {
   getChats: () => Promise<void>;
   uploadChat: (chatId: string) => Promise<void>;
   deleteChat: (chatId: string) => Promise<void>;
+  updateChatName: (name: string) => void;
   chats: Chat[];
 }
 
-export default function Sidebar({ onCloseSidebar, getChats, uploadChat, deleteChat, chats }: SidebarProps) {
+export default function Sidebar({ 
+  onCloseSidebar, 
+  getChats, 
+  uploadChat, 
+  deleteChat,
+  updateChatName,
+  chats 
+}: SidebarProps) {
 
   useEffect(() => {
     getChats();
   }, []);
+
+  const handleSelectChat = (chatId: string, chatName: string) => {
+    uploadChat(chatId);
+    updateChatName(chatName);
+  };
 
   const handleDeleteChat = (chatId: string, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent triggering the parent click handler
@@ -48,7 +61,7 @@ export default function Sidebar({ onCloseSidebar, getChats, uploadChat, deleteCh
           </div>
           {
             chats.map((chat, index) => (
-              <div key={index} className="group cursor-pointer p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 flex items-center justify-between" onClick={() => uploadChat(chat.id)}>
+              <div key={index} className="group cursor-pointer p-2 hover:bg-zinc-100 dark:hover:bg-zinc-900 flex items-center justify-between" onClick={() => handleSelectChat(chat.id, chat.name)}>
                 <span>{chat.name}</span>
                 <button
                   onClick={(e) => handleDeleteChat(chat.id, e)}
