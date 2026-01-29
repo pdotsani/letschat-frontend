@@ -74,6 +74,8 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
       return {
         ...state,
         chathistory: [],
+        chatId: null,
+        chatName: null,
       };
     case ChatActionType.RemoveLastMessage:
       return {
@@ -162,12 +164,15 @@ export function chatPageHook() {
         : new Date(),
     };
 
+    const chat = await getChat(systemResponse.chatId);
+
     dispatch({ type: ChatActionType.RemoveLastMessage });
 
     dispatch({ type: ChatActionType.AddMessage, payload: assistantMessage });
 
     if (state.chatId == null) {
       dispatch({ type: ChatActionType.UpdateChatId, payload: systemResponse.chatId });
+      dispatch({ type: ChatActionType.UpdateChatName, payload: chat[0].name });
     }
   };
 
@@ -182,7 +187,6 @@ export function chatPageHook() {
 
   const handleClearChat = () => {
     dispatch({ type: ChatActionType.ClearChat });
-    dispatch({ type: ChatActionType.UpdateChatName, payload: '' });
   };
 
   const getChats = async () => {
@@ -206,7 +210,7 @@ export function chatPageHook() {
     const { data: { session } } = await supabase.auth.getSession();
     const authToken = session?.access_token;
 
-    const response = await fetch(`${SYSTEM_URL}/api/chat/${chatId}`, {
+    const response = await fetch(`${SYSTEM_URL}/api/chat/${chatId}/messages`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -244,6 +248,22 @@ export function chatPageHook() {
     
     return response.json();
   }
+
+  const getChat = async (chatId: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const authToken = session?.access_token;
+
+    const response = await fetch(`${SYSTEM_URL}/api/chat/${chatId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`,
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  };
 
   const updateChatName = async (name: string) => {
     dispatch({ type: ChatActionType.UpdateChatName, payload: name });
