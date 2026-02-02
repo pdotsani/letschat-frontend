@@ -9,7 +9,9 @@ interface SidebarProps {
   uploadChat: (chatId: string) => Promise<void>;
   deleteChat: (chatId: string) => Promise<void>;
   updateChatName: (name: string) => void;
+  handleClearChat: () => void;
   chats: Chat[];
+  currentChatId: string | null;
 }
 
 export default function Sidebar({ 
@@ -18,6 +20,8 @@ export default function Sidebar({
   uploadChat, 
   deleteChat,
   updateChatName,
+  handleClearChat,
+  currentChatId,
   chats 
 }: SidebarProps) {
 
@@ -33,6 +37,9 @@ export default function Sidebar({
   const handleDeleteChat = (chatId: string, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent triggering the parent click handler
     deleteChat(chatId);
+    if (chatId === currentChatId) {
+      handleClearChat();
+    }
   };
 
   return (

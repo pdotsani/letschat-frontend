@@ -14,6 +14,8 @@ interface ChatWindowProps {
   uploadChat: (chatId: string) => Promise<void>;
   deleteChat: (chatId: string) => Promise<void>;
   updateChatName: (name: string) => void;
+  handleClearChat: () => void;
+  currentChatId: string | null;
   chats: Chat[];
 }
 
@@ -25,6 +27,8 @@ export default function ChatWindow({
   uploadChat, 
   deleteChat,
   updateChatName,
+  handleClearChat,
+  currentChatId,
   chats 
 }: ChatWindowProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -37,6 +41,8 @@ export default function ChatWindow({
     <div className="flex flex-row h-full w-full overflow-y-auto">
       {isSidebarOpen && (
         <Sidebar
+          handleClearChat={handleClearChat}
+          currentChatId={currentChatId}
           onCloseSidebar={onCloseSidebar}
           getChats={getChats}
           uploadChat={uploadChat}

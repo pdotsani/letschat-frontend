@@ -15,6 +15,7 @@ export default function ChatPage() {
     uploadChat,
     deleteChat,
     updateChatName,
+    currentChatId,
     chatName,
     chats
   } = chatPageHook();
@@ -34,6 +35,8 @@ export default function ChatPage() {
       <ChatWindow
         messages={chathistory}
         isSidebarOpen={isSidebarOpen}
+        handleClearChat={handleClearChat}
+        currentChatId={currentChatId}
         onCloseSidebar={handleCloseSidebar}
         getChats={getChats}
         uploadChat={uploadChat}

@@ -273,6 +273,7 @@ export function chatPageHook() {
     chathistory: state.chathistory,
     chats: state.chats,
     chatName: state.chatName,
+    currentChatId: state.chatId,
     handleSendMessage,
     handleAddSystemMessage,
     handleClearChat,
